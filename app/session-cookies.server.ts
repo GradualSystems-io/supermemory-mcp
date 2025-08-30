@@ -1,5 +1,10 @@
 import { createCookieSessionStorage } from "react-router"
 
+
+const AUTH_SECRET = process.env.AUTH_SECRET;
+if (!AUTH_SECRET || AUTH_SECRET.length < 32) {
+  throw new Error("AUTH_SECRET must be set to a strong random value");
+}
 type SessionData = {
     userId: string
 }
@@ -18,10 +23,10 @@ const { getSession, commitSession, destroySession } =
 
             httpOnly: true,
             // Set to expire in year 9999 (effectively never)
-            // expires: new Date("9999-12-31"),
+            // maxAge: 60 * 60 * 24 * 180,
             path: "/",
             sameSite: "lax",
-            secrets: [process.env.AUTH_SECRET ?? ""],
+            secrets: [AUTH_SECRET],
             secure: true,
         },
     })

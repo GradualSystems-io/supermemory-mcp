@@ -125,69 +125,6 @@ export async function loader({ request, context }: Route.LoaderArgs) {
                 containerTags: [userId]
             })
         ).memories
-        console.log("memories", memories)
-        return data({
-            message: "Welcome back!",
-            userId,
-            memories,
-        })
-    }
-
-    session.set("userId", nanoid())
-    const userId = session.get("userId")!
-
-    return data(
-        {
-            message: "Welcome to Supermemory MCP!",
-            userId,
-            memories: [],
-        },
-        {
-            headers: {
-                "Set-Cookie": await commitSession(session, {
-                    expires: new Date("9999-12-31"),
-                }),
-            },
-        },
-    )
-}
-
-export async function action({
-    request,
-    context,
-}: {
-    request: Request
-    context: AppLoadContext
-}) {
-    const formData = await request.formData()
-    const userId = formData.get("userId") as string
-    const actionType = formData.get("action") as string
-
-    if (!userId) {
-        return data({ error: "User ID is required" }, { status: 400 })
-    }
-
-    console.log(context.cloudflare.env.SUPERMEMORY_API_KEY)
-    const supermemory = new Supermemory({
-        apiKey: context.cloudflare.env.SUPERMEMORY_API_KEY,
-    })
-
-    try {
-        // Handle different action types
-        switch (actionType) {
-            case "fetch":
-                // Just return the memories
-                return data({
-                    success: true,
-                    memories: (
-                        await supermemory.memories.list({
-                            limit: "2000",
-                            containerTags: [userId]
-                        })
-                    ).memories,
-                })
-            // case "add":
-            //   const content = formData.get("content") as string;
             //   if (content) {
             //     await supermemory.memory.create({
             //       content
