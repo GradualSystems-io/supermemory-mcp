@@ -13,3 +13,13 @@
 
 .env
 bun.lock
+
+# Local credentials and private keys
+.env*
+*.pem
+*.key
+*service-account*.json
+*service_account*.json
+*serviceAccount*.json
+*firebase-adminsdk*.json
+credentials.json
